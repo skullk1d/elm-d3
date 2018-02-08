@@ -1,0 +1,140 @@
+[
+    {
+        "id": 1,
+        "time": 1511823600000,
+        "value": 60,
+        "type": "blue"
+    },
+    {
+        "id": 2,
+        "time": 1511824200000,
+        "value": 65,
+        "type": "blue"
+    },
+    {
+        "id": 3,
+        "time": 1511824800000,
+        "value": 74,
+        "type": "blue"
+    },
+    {
+        "id": 4,
+        "time": 1511825400000,
+        "value": 80,
+        "type": "blue"
+    },
+    {
+        "id": 5,
+        "time": 1511826000000,
+        "value": 100,
+        "type": "green"
+    },
+    {
+        "id": 6,
+        "time": 1511826600000,
+        "value": 121,
+        "type": "green"
+    },
+    {
+        "id": 7,
+        "time": 1511827200000,
+        "value": 61,
+        "type": "blue"
+    },
+    {
+        "id": 8,
+        "time": 1511827800000,
+        "value": 69,
+        "type": "blue"
+    },
+    {
+        "id": 9,
+        "time": 1511828400000,
+        "value": 71,
+        "type": "blue"
+    },
+    {
+        "id": 10,
+        "time": 1511829000000,
+        "value": 69,
+        "type": "blue"
+    },
+    {
+        "id": 11,
+        "time": 1511829600000,
+        "value": 60,
+        "type": "blue"
+    },
+    {
+        "id": 12,
+        "time": 1511830200000,
+        "value": 65,
+        "type": "blue"
+    },
+    {
+        "id": 13,
+        "time": 1511830800000,
+        "value": 74,
+        "type": "blue"
+    },
+    {
+        "id": 14,
+        "time": 1511831400000,
+        "value": 80,
+        "type": "blue"
+    },
+    {
+        "id": 15,
+        "time": 1511832000000,
+        "value": 100,
+        "type": "red"
+    },
+    {
+        "id": 16,
+        "time": 1511832600000,
+        "value": 121,
+        "type": "red"
+    },
+    {
+        "id": 17,
+        "time": 1511833200000,
+        "value": 61,
+        "type": "blue"
+    },
+    {
+        "id": 18,
+        "time": 1511833800000,
+        "value": 69,
+        "type": "blue"
+    },
+    {
+        "id": 19,
+        "time": 1511834400000,
+        "value": 71,
+        "type": "blue"
+    },
+    {
+        "id": 20,
+        "time": 1511835000000,
+        "value": 100,
+        "type": "green"
+    },
+    {
+        "id": 17,
+        "time": 1511835600000,
+        "value": 61,
+        "type": "blue"
+    },
+    {
+        "id": 18,
+        "time": 1511836200000,
+        "value": 69,
+        "type": "blue"
+    },
+    {
+        "id": 19,
+        "time": 1511836800000,
+        "value": 71,
+        "type": "blue"
+    }
+]

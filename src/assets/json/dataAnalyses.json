@@ -1,0 +1,196 @@
+{
+  "name": "data analysis",
+  "children": [
+    {
+      "name": "day",
+      "others": {
+        "start": "1508684400000",
+        "end": "1508770800000",
+        "unit": "3600000",
+        "unitAvg": "72",
+        "dateString": "Monday"
+      },
+      "children": [
+        {
+          "name": "blue",
+          "size": 2
+        },
+        {
+          "name": "red",
+          "size": 3
+        },
+        {
+          "name": "blue",
+          "size": 1
+        },
+        {
+          "name": "green",
+          "size": 2
+        },
+        {
+          "name": "blue",
+          "size": 1
+        }
+      ]
+    },
+    {
+      "name": "day",
+      "others": {
+        "start": "1508770800000",
+        "end": "1508857200000",
+        "unit": "3600000",
+        "unitAvg": "84",
+        "dateString": "Tuesday"
+      },
+      "children": [
+        {
+          "name": "green",
+          "size": 3
+        },
+        {
+          "name": "blue",
+          "size": 2
+        },
+        {
+          "name": "red",
+          "size": 1
+        },
+        {
+          "name": "green",
+          "size": 2
+        },
+        {
+          "name": "blue",
+          "size": 1
+        }
+      ]
+    },
+    {
+      "name": "day",
+      "others": {
+        "start": "1508857200000",
+        "end": "1508943600000",
+        "unit": "3600000",
+        "unitAvg": "60",
+        "dateString": "Wednesday"
+      },
+      "children": [
+        {
+          "name": "blue",
+          "size": 1
+        },
+        {
+          "name": "red",
+          "size": 2
+        },
+        {
+          "name": "blue",
+          "size": 3
+        },
+        {
+          "name": "green",
+          "size": 2
+        },
+        {
+          "name": "blue",
+          "size": 1
+        }
+      ]
+    },
+    {
+      "name": "day",
+      "others": {
+        "start": "1508943600000",
+        "end": "1509030000000",
+        "unit": "3600000",
+        "unitAvg": "65",
+        "dateString": "Thursday"
+      },
+      "children": [
+        {
+          "name": "blue",
+          "size": 4
+        },
+        {
+          "name": "red",
+          "size": 1
+        },
+        {
+          "name": "blue",
+          "size": 1
+        },
+        {
+          "name": "green",
+          "size": 1
+        },
+        {
+          "name": "blue",
+          "size": 2
+        }
+      ]
+    },
+    {
+      "name": "day",
+      "others": {
+        "start": "1509030000000",
+        "end": "1509116400000",
+        "unit": "3600000",
+        "unitAvg": "64",
+        "dateString": "Friday"
+      },
+      "children": [
+        {
+          "name": "red",
+          "size": 1
+        },
+        {
+          "name": "green",
+          "size": 2
+        },
+        {
+          "name": "blue",
+          "size": 1
+        },
+        {
+          "name": "green",
+          "size": 1
+        },
+        {
+          "name": "empty",
+          "size": 4
+        }
+      ]
+    },
+    {
+      "name": "month",
+      "others": {
+        "start": "1506783600000",
+        "end": "1509462000000",
+        "unit": "83000000",
+        "dateString": "October"
+      },
+      "children": [
+        {
+          "name": "blue",
+          "size": 2
+        },
+        {
+          "name": "red",
+          "size": 3
+        },
+        {
+          "name": "blue",
+          "size": 1
+        },
+        {
+          "name": "green",
+          "size": 2
+        },
+        {
+          "name": "blue",
+          "size": 1
+        }
+      ]
+    }
+  ]
+}

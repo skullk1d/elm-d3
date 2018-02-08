@@ -1,0 +1,10 @@
+/* https://github.com/mdgriffith/style-elements/issues/114 */
+* {
+  box-sizing: border-box;
+}
+
+*:focus {
+  outline: none;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
