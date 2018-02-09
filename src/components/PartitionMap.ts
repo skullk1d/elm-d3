@@ -174,10 +174,10 @@ export class PartitionMap {
         // the arcs, whose radii and angles are scaled to a radius bound to the container size
         const radius = this.width / 2;
 
-        // define total size of sunburst as half circle and format our data as d3 hiearchy
+        // define total size of sunburst as arclength of circle and format our data as d3 hiearchy
         // NOTE half circle sunburst [Math.PI, radius]
         const partition = d3.partition()
-            .size([Math.PI * 4 / 3, radius]);
+            .size([Math.PI * 2, radius]);
         const root = d3.hierarchy(transformedDatum)
             .sum(d => d.size);
 

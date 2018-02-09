@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "D3 demo with Elm & TypeScript",
-    "repository": "https://github.com/skullk1d/elm-d3",
+    "repository": "https://github.com/skullk1d/elm-d3.git",
     "license": "BSD3",
     "source-directories": [
         "src"

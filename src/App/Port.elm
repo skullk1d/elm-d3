@@ -3,7 +3,6 @@ port module App.Port exposing (..)
 import Json.Decode as Decode exposing (list)
 import Json.Encode as Encode exposing (list)
 import Result exposing (Result(Ok, Err))
-import Dict exposing (Dict)
 import Array exposing (Array)
 import App.Data exposing (..)
 import App.Request exposing (getDataPointAnalyses, filterAnalysesByTime)
@@ -26,22 +25,9 @@ type Msg
     | LogError String
 
 
-init : String -> ( Model, Cmd Msg )
-init api =
+init : String -> PartitionParams -> ( Model, Cmd Msg )
+init api initPartitionParams =
     let
-        initPartitionParams =
-            { colorMap =
-                Dict.fromList
-                    [ ( "blue", "#3c7df3" )
-                    , ( "red", "#f06292" )
-                    , ( "green", "#90eb9d" )
-                    ]
-            , data = Encode.array Array.empty
-            , shape = Arc
-            , width = 300
-            , height = 300
-            }
-
         initModel =
             { api = api
             , partitions = []

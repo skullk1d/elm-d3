@@ -43,7 +43,7 @@ init flags location =
             Top.init
 
         ( portModel, portCmd ) =
-            Port.init flags.api
+            Port.init flags.api topModel.partitionParams
 
         menuModel =
             Menu.init
@@ -97,8 +97,16 @@ update msg model =
             let
                 ( model_, cmds ) =
                     Top.update msg_ model.top
+
+                portModel =
+                    model.ports
+
+                newPortModel =
+                    { portModel
+                        | partitionParams = model.top.partitionParams
+                    }
             in
-                ( { model | top = model_ }, Cmd.map TopMsg cmds )
+                ( { model | top = model_, ports = newPortModel }, Cmd.map TopMsg cmds )
 
         AboutMsg msg_ ->
             let
