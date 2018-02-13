@@ -1,5 +1,6 @@
 module App.Page.Top exposing (..)
 
+import Navigation exposing (Location)
 import Color exposing (..)
 import Element exposing (..)
 import Style exposing (..)
@@ -36,6 +37,7 @@ type alias Model =
 
 type Msg
     = NoOp
+    | NewRoute Route
     | GetDataPointsResponse (WebData (List DataPoint))
 
 
@@ -67,52 +69,54 @@ styles =
 -- VIEW
 
 
-view : { a | newRoute : Route -> msg, toMsg : Msg -> msg } -> Model -> Element Styles variation msg
-view { newRoute, toMsg } model =
-    column None
-        []
-        [ el None [] (text "Data View")
-        , paragraph None
+view : Model -> Element Styles variation Msg
+view model =
+    let
+        text =
+            Element.text
+    in
+        column None
             []
-            [ link (Routing.routeToUrl AboutRoute) <|
-                el Link [ onPreventDefaultClick <| newRoute AboutRoute ] (text "About")
-            ]
-        , el None
-            []
-            (case model.dataPointsResponse of
-                NotAsked ->
-                    text ""
+            [ el None [] (text "Data View")
+            , paragraph None
+                []
+                [ link (Routing.routeToUrl AboutRoute) <|
+                    el Link [ onPreventDefaultClick <| NewRoute AboutRoute ] (text "About")
+                ]
+            , el None
+                []
+                (case model.dataPointsResponse of
+                    NotAsked ->
+                        text ""
 
-                Loading ->
-                    text "Getting data..."
+                    Loading ->
+                        text "Getting data..."
 
-                Failure err ->
-                    text ("Error: " ++ toString err)
+                    Failure err ->
+                        text ("Error: " ++ toString err)
 
-                Success dataPoints ->
-                    text "Got data"
-            )
-        , model.dataPointsResponse
-            |> RemoteData.map
-                (\dataPoints ->
-                    DataTable.dataPointTable dataPoints
-                        |> mapAll identity DataPointTableStyles identity
+                    Success dataPoints ->
+                        text "Got data"
                 )
-            |> RemoteData.withDefault
-                (el None [] (empty))
-        , h3 None [] (text "Arcs")
-        , row
-            None
-            []
-            (List.map
-                (\partition ->
-                    (PartitionMap.view partition model.partitionWidth model.partitionHeight
-                        |> mapAll identity PartitionMapStyles identity
+            , model.dataPointsResponse
+                |> RemoteData.map
+                    (\dataPoints ->
+                        DataTable.dataPointTable dataPoints
+                            |> mapAll identity DataPointTableStyles identity
                     )
+                |> RemoteData.withDefault
+                    (el None [] (empty))
+            , row None
+                []
+                (List.map
+                    (\partition ->
+                        (PartitionMap.view partition model.partitionWidth model.partitionHeight
+                            |> mapAll identity PartitionMapStyles identity
+                        )
+                    )
+                    model.partitions
                 )
-                model.partitions
-            )
-        ]
+            ]
 
 
 
@@ -121,23 +125,27 @@ view { newRoute, toMsg } model =
 
 init : Model
 init =
-    { dataPointsResponse = NotAsked
-    , partitions = []
-    , partitionWidth = 0
-    , partitionHeight = 0
-    , partitionParams =
-        { colorMap =
-            Dict.fromList
-                [ ( "blue", "#3c7df3" )
-                , ( "red", "#f06292" )
-                , ( "green", "#90eb9d" )
-                ]
-        , data = Encode.array Array.empty
-        , shape = Arc
-        , width = 300
-        , height = 300
+    let
+        default =
+            Arc
+    in
+        { dataPointsResponse = NotAsked
+        , partitions = []
+        , partitionWidth = 0
+        , partitionHeight = 0
+        , partitionParams =
+            { colorMap =
+                Dict.fromList
+                    [ ( "blue", "#3c7df3" )
+                    , ( "red", "#f06292" )
+                    , ( "green", "#90eb9d" )
+                    ]
+            , data = Encode.array Array.empty
+            , shape = default
+            , width = 300
+            , height = 300
+            }
         }
-    }
 
 
 
@@ -149,6 +157,9 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        NewRoute route ->
+            ( model, Navigation.newUrl (Routing.routeToUrl route) )
 
         GetDataPointsResponse response ->
             ( { model | dataPointsResponse = response }

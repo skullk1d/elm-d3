@@ -1,5 +1,6 @@
 module App.Page.About exposing (..)
 
+import Navigation exposing (Location)
 import Color exposing (..)
 import Element exposing (..)
 import Style exposing (..)
@@ -14,6 +15,7 @@ import App.Routing as Routing exposing (Route(..))
 
 type Msg
     = NoOp
+    | NewRoute Route
 
 
 
@@ -37,15 +39,15 @@ styles =
 -- VIEW
 
 
-view : { a | newRoute : Route -> msg, toMsg : Msg -> msg } -> Element Styles variation msg
-view { newRoute, toMsg } =
+view : Element Styles variation Msg
+view =
     column None
         []
         [ el None [] (text "About")
         , paragraph None
             []
             [ link (Routing.routeToUrl TopRoute) <|
-                el Link [ onPreventDefaultClick <| newRoute TopRoute ] (text "top")
+                el Link [ onPreventDefaultClick <| NewRoute TopRoute ] (text "top")
             ]
         , paragraph None
             []
@@ -63,3 +65,6 @@ update msg =
     case msg of
         NoOp ->
             Cmd.none
+
+        NewRoute route ->
+            Navigation.newUrl (Routing.routeToUrl route)

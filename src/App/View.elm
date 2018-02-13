@@ -65,12 +65,16 @@ routeOutlet : Model -> Element Styles variation Msg
 routeOutlet model =
     case model.currentRoute of
         Routing.TopRoute ->
-            Top.view { newRoute = NewRoute, toMsg = TopMsg } model.top
-                |> mapAll identity TopStyles identity
+            Element.map TopMsg
+                (Top.view model.top
+                    |> mapAll identity TopStyles identity
+                )
 
         Routing.AboutRoute ->
-            About.view { newRoute = NewRoute, toMsg = AboutMsg }
-                |> mapAll identity AboutStyles identity
+            Element.map AboutMsg
+                (About.view
+                    |> mapAll identity AboutStyles identity
+                )
 
         Routing.NotFoundRoute ->
             NotFound.view

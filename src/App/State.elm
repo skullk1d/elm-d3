@@ -10,7 +10,6 @@ import App.Port as Port
 
 type Msg
     = NoOp
-    | NewRoute Route
     | OnLocationChange Location
     | TopMsg Top.Msg
     | AboutMsg About.Msg
@@ -82,9 +81,6 @@ update msg model =
     case msg of
         NoOp ->
             model ! []
-
-        NewRoute route ->
-            ( model, Navigation.newUrl (Routing.routeToUrl route) )
 
         OnLocationChange location ->
             let
