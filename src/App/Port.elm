@@ -3,7 +3,9 @@ port module App.Port exposing (..)
 import Json.Decode as Decode exposing (list)
 import Json.Encode as Encode exposing (list)
 import Result exposing (Result(Ok, Err))
+import Dict exposing (Dict)
 import Array exposing (Array)
+import Json.Encode as Encode exposing (list)
 import App.Data exposing (..)
 import App.Request exposing (getDataPointAnalyses, filterAnalysesByTime)
 import RemoteData exposing (..)
@@ -23,17 +25,29 @@ type Msg
     | GetDataPointAnalysesResponse (WebData PartitionDatum)
     | Outside IncomingMsg
     | LogError String
+    | SubmitForm PartitionForm
 
 
-init : String -> PartitionParams -> ( Model, Cmd Msg )
-init api initPartitionParams =
+init : String -> ( Model, Cmd Msg )
+init api =
     let
         initModel =
             { api = api
             , partitions = []
             , dataPointAnalyses = Encode.array Array.empty
             , dataPointAnalysesResponse = NotAsked
-            , partitionParams = initPartitionParams
+            , partitionParams =
+                { colorMap =
+                    Dict.fromList
+                        [ ( "blue", "#3c7df3" )
+                        , ( "red", "#f06292" )
+                        , ( "green", "#90eb9d" )
+                        ]
+                , data = Encode.array Array.empty
+                , shape = Arc
+                , width = 300
+                , height = 300
+                }
             }
     in
         initModel
@@ -74,15 +88,22 @@ update msg model =
                         Failure _ ->
                             Encode.array Array.empty
 
-                partitionParams =
+                params =
                     model.partitionParams
 
                 newParams =
-                    { partitionParams | data = dataPointAnalyses }
+                    { params | data = dataPointAnalyses }
             in
                 ( { model | dataPointAnalyses = dataPointAnalyses, partitionParams = newParams }
                 , dispatchOutgoingMsg (GeneratePartitionMap newParams)
                 )
+
+        SubmitForm pForm ->
+            let
+                newParams =
+                    generatePartitionParams pForm model.partitionParams
+            in
+                ( { model | partitionParams = newParams }, dispatchOutgoingMsg (GeneratePartitionMap newParams) )
 
         Outside incomingMsg ->
             case incomingMsg of
@@ -112,6 +133,12 @@ port outgoingData : OutsideData -> Cmd msg
 
 
 port incomingData : (OutsideData -> msg) -> Sub msg
+
+
+generatePartitionParams : PartitionForm -> PartitionParams -> PartitionParams
+generatePartitionParams pForm lastParams =
+    -- map input form submission data to d3 request parameters here ONLY
+    { lastParams | shape = pForm.shape }
 
 
 dispatchOutgoingMsg : OutgoingMsg -> Cmd msg

@@ -3,18 +3,18 @@ module App.Page.Top exposing (..)
 import Navigation exposing (Location)
 import Color exposing (..)
 import Element exposing (..)
+import Element.Input exposing (..)
+import Element.Attributes exposing (..)
 import Style exposing (..)
 import Style.Color as Color
 import Style.Font as Font
 import Style.Sheet as Sheet
 import App.Util exposing (onPreventDefaultClick)
+import Task
 import RemoteData exposing (..)
-import Dict exposing (Dict)
-import Array exposing (Array)
-import Json.Encode as Encode exposing (list)
 import App.Request exposing (getDataPoints)
 import App.Routing as Routing exposing (Route(..))
-import App.Data exposing (DataPoint, Partition, PartitionNode, PartitionParams, PartitionShape(..))
+import App.Data exposing (DataPoint, Partition, PartitionNode, PartitionParams, PartitionShape(..), PartitionForm)
 import App.View.DataTable as DataTable
 import App.View.PartitionMap as PartitionMap
 
@@ -27,7 +27,7 @@ type alias Model =
     , partitions : List Partition
     , partitionWidth : Int
     , partitionHeight : Int
-    , partitionParams : PartitionParams
+    , selectMenu : SelectWith PartitionShape Msg
     }
 
 
@@ -39,6 +39,8 @@ type Msg
     = NoOp
     | NewRoute Route
     | GetDataPointsResponse (WebData (List DataPoint))
+    | SelectOne (SelectMsg PartitionShape)
+    | SubmitForm PartitionForm
 
 
 
@@ -106,6 +108,21 @@ view model =
                     )
                 |> RemoteData.withDefault
                     (el None [] (empty))
+            , select None
+                [ padding 10
+                , spacing 20
+                ]
+                { label = labelAbove <| text "Shape:"
+                , with = model.selectMenu
+                , max = 5
+                , options = []
+                , menu =
+                    menuAbove None
+                        []
+                        [ choice Arc (text "Arc")
+                        , choice Rectangle (text "Rectangle")
+                        ]
+                }
             , row None
                 []
                 (List.map
@@ -125,27 +142,12 @@ view model =
 
 init : Model
 init =
-    let
-        default =
-            Arc
-    in
-        { dataPointsResponse = NotAsked
-        , partitions = []
-        , partitionWidth = 0
-        , partitionHeight = 0
-        , partitionParams =
-            { colorMap =
-                Dict.fromList
-                    [ ( "blue", "#3c7df3" )
-                    , ( "red", "#f06292" )
-                    , ( "green", "#90eb9d" )
-                    ]
-            , data = Encode.array Array.empty
-            , shape = default
-            , width = 300
-            , height = 300
-            }
-        }
+    { dataPointsResponse = NotAsked
+    , partitions = []
+    , partitionWidth = 0
+    , partitionHeight = 0
+    , selectMenu = dropMenu (Just Arc) SelectOne
+    }
 
 
 
@@ -165,6 +167,23 @@ update msg model =
             ( { model | dataPointsResponse = response }
             , Cmd.none
             )
+
+        SelectOne selectMsg ->
+            let
+                selectMenu =
+                    updateSelection selectMsg model.selectMenu
+
+                shape =
+                    selected selectMenu
+                        |> Maybe.withDefault Arc
+            in
+                -- no submit button so we submit as soon as select form changes
+                ( { model | selectMenu = selectMenu }
+                , Task.succeed (SubmitForm { shape = shape }) |> Task.perform identity
+                )
+
+        SubmitForm _ ->
+            ( model, Cmd.none )
 
 
 onNavigate : Model -> String -> ( Model, Cmd Msg )

@@ -350,3 +350,7 @@ type alias AnalyticsRequestParams =
     , unit : Int
     , timeFrame : TimeFrame
     }
+
+
+type alias PartitionForm =
+    { shape : PartitionShape }

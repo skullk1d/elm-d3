@@ -42,7 +42,7 @@ init flags location =
             Top.init
 
         ( portModel, portCmd ) =
-            Port.init flags.api topModel.partitionParams
+            Port.init flags.api
 
         menuModel =
             Menu.init
@@ -90,19 +90,20 @@ update msg model =
                 getRouteCmds newRoute model
 
         TopMsg msg_ ->
+            -- TODO implement a helper function to map outgoing messages
             let
-                ( model_, cmds ) =
+                ( topModel, topCmds ) =
                     Top.update msg_ model.top
 
-                portModel =
-                    model.ports
+                ( _, portCmds ) =
+                    case msg_ of
+                        Top.SubmitForm pForm ->
+                            Port.update (Port.SubmitForm pForm) model.ports
 
-                newPortModel =
-                    { portModel
-                        | partitionParams = model.top.partitionParams
-                    }
+                        _ ->
+                            ( model.ports, Cmd.none )
             in
-                ( { model | top = model_, ports = newPortModel }, Cmd.map TopMsg cmds )
+                { model | top = topModel } ! [ Cmd.map TopMsg topCmds, Cmd.map PortMsg portCmds ]
 
         AboutMsg msg_ ->
             let
