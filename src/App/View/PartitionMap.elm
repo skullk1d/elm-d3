@@ -39,8 +39,7 @@ view partition w h =
     in
         column None
             []
-            [ h1 Title [] (Element.text "Partition Map")
-            , el None
+            [ el None
                 []
                 (if List.isEmpty nodes then
                     empty

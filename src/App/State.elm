@@ -27,7 +27,6 @@ type alias Model =
     , currentRoute : Route
     , top : Top.Model
     , ports : Port.Model
-    , menu : Menu.Model
     }
 
 
@@ -44,16 +43,12 @@ init flags location =
         ( portModel, portCmd ) =
             Port.init flags.api
 
-        menuModel =
-            Menu.init
-
         initModel =
             { api = flags.api
             , message = "D3 is lit"
             , currentRoute = Routing.parseLocation location
             , top = topModel
             , ports = portModel
-            , menu = menuModel
             }
 
         ( model, routeCmd ) =
@@ -114,10 +109,10 @@ update msg model =
 
         MenuMsg msg_ ->
             let
-                ( model_, cmds ) =
-                    Menu.update msg_ model.menu
+                cmds =
+                    Menu.update msg_
             in
-                ( { model | menu = model_ }, Cmd.map MenuMsg cmds )
+                ( model, Cmd.map MenuMsg cmds )
 
         PortMsg msg_ ->
             let

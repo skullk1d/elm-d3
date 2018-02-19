@@ -8,6 +8,7 @@ import Style exposing (..)
 import Style.Color as Color
 import Style.Font as Font
 import Style.Sheet as Sheet
+import Style.Shadow as Shadow
 import Task
 import RemoteData exposing (..)
 import App.Request exposing (getDataPoints)
@@ -46,6 +47,9 @@ type Msg
 type Styles
     = None
     | Link
+    | StatusValue
+    | Title
+    | Choice
     | DataTableStyles DataTable.Styles
     | PartitionMapStyles PartitionMap.Styles
 
@@ -66,6 +70,18 @@ styles =
         [ style None []
         , style Link
             [ Color.text red, Font.underline ]
+        , style Title
+            [ Font.size 32
+            , Font.light
+            , Font.center 
+            ]
+        , style StatusValue
+            [ Color.text darkGray
+            , Font.italic 
+            ]
+        , style Choice
+            [ Shadow.drop { offset = (2, 2), blur = 4, color = gray }
+            ]
         , mapStyle DataTableStyles DataTableVariations (DataTable.styles)
         ]
 
@@ -82,57 +98,72 @@ view model =
     in
         column None
             []
-            [ el None [] (text "Data")
-            , el None
-                []
-                (case model.dataPointsResponse of
-                    NotAsked ->
-                        text ""
-
-                    Loading ->
-                        text "Getting data..."
-
-                    Failure err ->
-                        text ("Error: " ++ toString err)
-
-                    Success dataPoints ->
-                        text "Got data"
-                )
-            , model.dataPointsResponse
-                |> RemoteData.map
-                    (\dataPoints ->
-                        DataTable.dataPointTable dataPoints
-                            |> mapAll identity DataTableStyles DataTableVariations
-                    )
-                |> RemoteData.withDefault
-                    (el None [] (empty))
-            , select None
-                [ padding 10
-                , spacing 20
-                ]
-                { label = labelAbove <| text "Shape:"
-                , with = model.selectMenu
-                , max = 5
-                , options = []
-                , menu =
-                    menuAbove None
-                        []
-                        [ choice Arc (text "Arc")
-                        , choice Rectangle (text "Rectangle")
-                        ]
-                }
+            [ h1 Title [ padding 20 ] (text "Raw data")
             , row None
-                []
-                (List.map
-                    (\partition ->
-                        (PartitionMap.view partition model.partitionWidth model.partitionHeight
-                            |> mapAll identity PartitionMapStyles identity
-                        )
-                    )
-                    model.partitions
-                )
-            ]
+                [ padding 10 ]
+                [ el None
+                    []
+                    (text "Status: ")
+                , el StatusValue
+                    []
+                    (case model.dataPointsResponse of
+                        NotAsked ->
+                            text ""
 
+                        Loading ->
+                            text "Getting data..."
+
+                        Failure err ->
+                            text ("Error: " ++ toString err)
+
+                        Success dataPoints ->
+                            text "Got data"
+                    )
+                ]
+            , el None 
+                [ padding 10 ]  
+                ( model.dataPointsResponse
+                    |> RemoteData.map
+                        (\dataPoints ->
+                            DataTable.dataPointTable dataPoints
+                                |> mapAll identity DataTableStyles DataTableVariations
+                        )
+                    |> RemoteData.withDefault
+                        (el None [] (empty))
+                )
+            , column None
+                [ padding 10 ]
+                [ h1 Title 
+                    [ padding 20 ] 
+                    (text "Analytical data")
+                , select None
+                    [ padding 10
+                    , spacing 20
+                    , width content
+                    ]
+                    { label = labelAbove <| text "Select Shape:"
+                    , with = model.selectMenu
+                    , max = 5
+                    , options = []
+                    , menu =
+                        menu Choice
+                            [ width (px 200) ]
+                            [ choice Arc (text "Arc")
+                            , choice Rectangle (text "Rectangle")
+                            ]
+                    }
+                , wrappedRow None
+                    [ spacing 10 ]
+                    (List.map
+                        (\partition ->
+                            (PartitionMap.view partition model.partitionWidth model.partitionHeight
+                                |> mapAll identity PartitionMapStyles identity
+                            )
+                        )
+                        model.partitions
+                    )
+                ]
+            ]
 
 
 -- INIT

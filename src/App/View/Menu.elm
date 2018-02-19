@@ -9,7 +9,7 @@ import Element exposing (..)
 import Element.Attributes exposing (..)
 import Style exposing (..)
 import Style.Color as Color
-import Style.Font as Font
+import Style.Border as Border
 import App.Util exposing (onPreventDefaultClick)
 import App.Routing as Routing exposing (Route(..))
 
@@ -32,21 +32,16 @@ type Variations
     = Selected
 
 
-
--- Model
-
-
-type alias Model =
-    { selected : Route
-    }
-
-
 styles : List (Style Styles Variations)
 styles =
     [ style None []
     , style Link
-        [ Color.text darkRed
-        , Font.underline
+        [ Color.text lightCharcoal
+        , variation Selected 
+            [ Color.text darkRed
+            , Border.solid
+            , Border.bottom 2
+            ]
         , hover
             [ Color.text lightRed
             ]
@@ -54,49 +49,48 @@ styles =
     ]
 
 
-
--- INIT
-
-
-init : Model
-init =
-    { selected = AboutRoute
-    }
-
-
-
 -- VIEW
 
 
-view : Model -> Element Styles Variations Msg
-view model =
-    column
-        None
-        []
-        [ link (Routing.routeToUrl AboutRoute) <|
-            button Link
-                [ onPreventDefaultClick <| NewRoute AboutRoute
-                , vary Selected (model.selected == AboutRoute)
+view : Route -> Element Styles Variations Msg
+view currentRoute =
+    let
+        buttonAttr = 
+            [ padding 10
+            , spacing 10
+            ]
+    in
+    
+        column None []
+            [ row None []
+                [ link (Routing.routeToUrl AboutRoute) <|
+                    button Link
+                        (List.append 
+                            [ onPreventDefaultClick <| NewRoute AboutRoute
+                            , vary Selected (currentRoute == AboutRoute)
+                            ] buttonAttr
+                        )
+                        (text "About")
+                , link (Routing.routeToUrl TopRoute) <|
+                    button Link
+                        (List.append
+                            [ onPreventDefaultClick <| NewRoute TopRoute
+                            , vary Selected (currentRoute == TopRoute)
+                            ] buttonAttr
+                        )
+                        (text "Data")
                 ]
-                (text "About")
-        , link (Routing.routeToUrl TopRoute) <|
-            button Link
-                [ onPreventDefaultClick <| NewRoute TopRoute
-                , vary Selected (model.selected == TopRoute)
-                ]
-                (text "Data")
-        ]
-
+            ]
 
 
 -- UPDATE
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : Msg -> Cmd Msg
+update msg =
     case msg of
         NoOp ->
-            ( model, Cmd.none )
+            Cmd.none
 
         NewRoute route ->
-            ( { model | selected = route }, Navigation.newUrl (Routing.routeToUrl route) )
+            Navigation.newUrl (Routing.routeToUrl route)

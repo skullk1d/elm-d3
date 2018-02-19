@@ -17,7 +17,6 @@ import App.Data exposing (DataPoint)
 
 type Styles
     = None
-    | Title
     | Row
     | Cell
 
@@ -29,8 +28,6 @@ type Variations
 styles : List (Style Styles Variations)
 styles =
     [ style None []
-    , style Title
-        [ Font.size 24 ]
     , style Row
         [ pseudo "nth-child(even)"
             [ Color.background Color.lightGray ]
@@ -39,7 +36,7 @@ styles =
         [ Font.size 16
         , variation CellHeader
             [ Font.bold
-            , Color.text Color.red
+            , Color.text Color.darkCharcoal
             , Color.background Color.white
             ]
         ]
@@ -54,8 +51,7 @@ dataPointTable : List DataPoint -> Element Styles Variations msg
 dataPointTable dataPoints =
     column None
         []
-        [ h1 Title [] (text "Raw data")
-        , table None
+        [ table None
             []
             [ [ el Cell [ vary CellHeader True ] (text "Id") ]
             , [ el Cell [ vary CellHeader True ] (text "Time") ]

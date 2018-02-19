@@ -27,7 +27,10 @@ styles : List (Style Styles variation)
 styles =
     [ style None []
     , style Description
-        [ Font.light, Font.size 32, Font.center ]
+        [ Font.light
+        , Font.size 32
+        , Font.center 
+        ]
     ]
 
 
@@ -39,10 +42,9 @@ view : Element Styles variation Msg
 view =
     column None
         []
-        [ el None [] (text "About")
-        , paragraph Description
+        [ paragraph Description
             [ width fill ]
-            [ el None [] (text "This is a demo showing data visualization with D3 l via Elm interoperability with TypeScript")
+            [ el None [] (text "This is a demo showing data visualization with D3 v4 via Elm & TypeScript interop")
             ]
         ]
 

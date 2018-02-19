@@ -65,7 +65,7 @@ view model =
     viewport stylesheet <|
         column GlobalStyles
             []
-            [ Element.map MenuMsg (Menu.view model.menu
+            [ Element.map MenuMsg (Menu.view model.currentRoute
                 |> mapAll identity MenuStyle MenuVariation)
             , (routeOutlet model)
             ]
@@ -89,3 +89,4 @@ routeOutlet model =
         Routing.NotFoundRoute ->
             NotFound.view
                 |> mapAll identity NotFoundStyles identity
+                
