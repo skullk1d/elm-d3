@@ -1,13 +1,9 @@
 module App.Page.About exposing (..)
 
-import Navigation exposing (Location)
-import Color exposing (..)
 import Element exposing (..)
+import Element.Attributes exposing (..)
 import Style exposing (..)
-import Style.Color as Color
 import Style.Font as Font
-import App.Util exposing (onPreventDefaultClick)
-import App.Routing as Routing exposing (Route(..))
 
 
 -- MESSAGES
@@ -15,7 +11,6 @@ import App.Routing as Routing exposing (Route(..))
 
 type Msg
     = NoOp
-    | NewRoute Route
 
 
 
@@ -25,13 +20,14 @@ type Msg
 type Styles
     = None
     | Link
+    | Description
 
 
 styles : List (Style Styles variation)
 styles =
-    [ Style.style None []
-    , Style.style Link
-        [ Color.text green, Font.underline ]
+    [ style None []
+    , style Description
+        [ Font.light, Font.size 32, Font.center ]
     ]
 
 
@@ -44,13 +40,8 @@ view =
     column None
         []
         [ el None [] (text "About")
-        , paragraph None
-            []
-            [ link (Routing.routeToUrl TopRoute) <|
-                el Link [ onPreventDefaultClick <| NewRoute TopRoute ] (text "top")
-            ]
-        , paragraph None
-            []
+        , paragraph Description
+            [ width fill ]
             [ el None [] (text "This is a demo showing data visualization with D3 l via Elm interoperability with TypeScript")
             ]
         ]
@@ -65,6 +56,3 @@ update msg =
     case msg of
         NoOp ->
             Cmd.none
-
-        NewRoute route ->
-            Navigation.newUrl (Routing.routeToUrl route)

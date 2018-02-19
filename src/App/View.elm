@@ -2,6 +2,7 @@ module App.View exposing (..)
 
 import Html exposing (..)
 import Element exposing (..)
+import Style.Font as Font
 import Style exposing (..)
 import Style.Sheet as Sheet
 import App.State exposing (..)
@@ -17,6 +18,7 @@ import App.Routing as Routing
 
 type Styles
     = None
+    | GlobalStyles
     | TopStyles Top.Styles
     | AboutStyles About.Styles
     | NotFoundStyles NotFound.Styles
@@ -25,6 +27,7 @@ type Styles
 
 type Variations
     = MenuVariation Menu.Variations
+    | TopVariation Top.Variations
 
 
 styles : List (Style Styles Variations)
@@ -34,7 +37,14 @@ styles =
             Sheet.map toStyle toVariation >> Sheet.merge
     in
         [ Style.style None []
-        , map TopStyles identity Top.styles
+        , style GlobalStyles
+            [ Font.typeface
+                [ Font.font "helvetica"
+                , Font.font "arial"
+                , Font.font "sans-serif"
+                ]
+            ]
+        , map TopStyles TopVariation Top.styles
         , map AboutStyles identity About.styles
         , map NotFoundStyles identity NotFound.styles
         , map MenuStyle MenuVariation Menu.styles
@@ -53,21 +63,21 @@ stylesheet =
 view : Model -> Html Msg
 view model =
     viewport stylesheet <|
-        column None
+        column GlobalStyles
             []
-            [ Menu.view { toMsg = MenuMsg } model.menu
-                |> mapAll identity MenuStyle MenuVariation
+            [ Element.map MenuMsg (Menu.view model.menu
+                |> mapAll identity MenuStyle MenuVariation)
             , (routeOutlet model)
             ]
 
 
-routeOutlet : Model -> Element Styles variation Msg
+routeOutlet : Model -> Element Styles Variations Msg
 routeOutlet model =
     case model.currentRoute of
         Routing.TopRoute ->
             Element.map TopMsg
                 (Top.view model.top
-                    |> mapAll identity TopStyles identity
+                    |> mapAll identity TopStyles TopVariation
                 )
 
         Routing.AboutRoute ->

@@ -1,6 +1,5 @@
 module App.Page.Top exposing (..)
 
-import Navigation exposing (Location)
 import Color exposing (..)
 import Element exposing (..)
 import Element.Input exposing (..)
@@ -9,11 +8,9 @@ import Style exposing (..)
 import Style.Color as Color
 import Style.Font as Font
 import Style.Sheet as Sheet
-import App.Util exposing (onPreventDefaultClick)
 import Task
 import RemoteData exposing (..)
 import App.Request exposing (getDataPoints)
-import App.Routing as Routing exposing (Route(..))
 import App.Data exposing (DataPoint, Partition, PartitionNode, PartitionParams, PartitionShape(..), PartitionForm)
 import App.View.DataTable as DataTable
 import App.View.PartitionMap as PartitionMap
@@ -37,7 +34,6 @@ type alias Model =
 
 type Msg
     = NoOp
-    | NewRoute Route
     | GetDataPointsResponse (WebData (List DataPoint))
     | SelectOne (SelectMsg PartitionShape)
     | SubmitForm PartitionForm
@@ -50,20 +46,27 @@ type Msg
 type Styles
     = None
     | Link
-    | DataPointTableStyles DataTable.Styles
+    | DataTableStyles DataTable.Styles
     | PartitionMapStyles PartitionMap.Styles
 
 
-styles : List (Style Styles variation)
+type Variations
+    = ActiveLink
+    | DataTableVariations DataTable.Variations
+
+
+styles : List (Style Styles Variations)
 styles =
     let
-        map toStyle =
-            Sheet.map toStyle identity >> Sheet.merge
+        mapStyle toStyle toVariation styles =
+            styles
+                |> Sheet.map toStyle toVariation
+                |> Sheet.merge
     in
-        [ Style.style None []
-        , Style.style Link
+        [ style None []
+        , style Link
             [ Color.text red, Font.underline ]
-        , map DataPointTableStyles DataTable.styles
+        , mapStyle DataTableStyles DataTableVariations (DataTable.styles)
         ]
 
 
@@ -71,7 +74,7 @@ styles =
 -- VIEW
 
 
-view : Model -> Element Styles variation Msg
+view : Model -> Element Styles Variations Msg
 view model =
     let
         text =
@@ -79,12 +82,7 @@ view model =
     in
         column None
             []
-            [ el None [] (text "Data View")
-            , paragraph None
-                []
-                [ link (Routing.routeToUrl AboutRoute) <|
-                    el Link [ onPreventDefaultClick <| NewRoute AboutRoute ] (text "About")
-                ]
+            [ el None [] (text "Data")
             , el None
                 []
                 (case model.dataPointsResponse of
@@ -104,7 +102,7 @@ view model =
                 |> RemoteData.map
                     (\dataPoints ->
                         DataTable.dataPointTable dataPoints
-                            |> mapAll identity DataPointTableStyles identity
+                            |> mapAll identity DataTableStyles DataTableVariations
                     )
                 |> RemoteData.withDefault
                     (el None [] (empty))
@@ -159,9 +157,6 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
-
-        NewRoute route ->
-            ( model, Navigation.newUrl (Routing.routeToUrl route) )
 
         GetDataPointsResponse response ->
             ( { model | dataPointsResponse = response }

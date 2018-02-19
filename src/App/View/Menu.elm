@@ -1,38 +1,22 @@
 module App.View.Menu exposing (..)
 
+-- import Html exposing (..)
+-- import Html.Attributes exposing (class)
+
+import Navigation exposing (Location)
 import Color exposing (..)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Element.Events as Events
 import Style exposing (..)
 import Style.Color as Color
-import Style.Transition as Transition
-
-
--- MODEL
-
-
-type State
-    = Opened
-    | Closed
-
-
-type alias Model =
-    State
-
-
-init : Model
-init =
-    Closed
-
-
-
--- MESSAGES
+import Style.Font as Font
+import App.Util exposing (onPreventDefaultClick)
+import App.Routing as Routing exposing (Route(..))
 
 
 type Msg
     = NoOp
-    | SelectMenu
+    | NewRoute Route
 
 
 
@@ -41,83 +25,66 @@ type Msg
 
 type Styles
     = None
-    | Backdrop
-    | Container
+    | Link
 
 
 type Variations
-    = Hidden
+    = Selected
+
+
+
+-- Model
+
+
+type alias Model =
+    { selected : Route
+    }
 
 
 styles : List (Style Styles Variations)
 styles =
-    [ Style.style None []
-    , Style.style Backdrop
-        [ Color.background black
-        , Style.opacity 0.5
-        , Style.prop "visibility" "visible"
-        , Transition.transitions
-            [ { delay = 0
-              , duration = 300
-              , easing = "ease"
-              , props = [ "opacity", "visibility" ]
-              }
-            ]
-        , Style.variation Hidden
-            [ Style.opacity 0
-            , Style.prop "visibility" "hidden"
-            ]
-        ]
-    , Style.style Container
-        [ Color.background white
-        , Transition.transitions
-            [ { delay = 0
-              , duration = 200
-              , easing = "ease-out"
-              , props = [ "left" ]
-              }
+    [ style None []
+    , style Link
+        [ Color.text darkRed
+        , Font.underline
+        , hover
+            [ Color.text lightRed
             ]
         ]
     ]
 
 
 
+-- INIT
+
+
+init : Model
+init =
+    { selected = AboutRoute
+    }
+
+
+
 -- VIEW
 
 
-view : { a | toMsg : Msg -> msg } -> Model -> Element Styles Variations msg
-view { toMsg } model =
-    column None
+view : Model -> Element Styles Variations Msg
+view model =
+    column
+        None
         []
-        [ el Backdrop
-            [ width fill
-            , height fill
-            , Events.onClick (toMsg SelectMenu)
-            , vary Hidden
-                (case model of
-                    Opened ->
-                        False
-
-                    Closed ->
-                        True
-                )
-            ]
-            empty
-            |> screen
-        , el Container
-            [ width (px 300)
-            , height fill
-            , moveLeft
-                (case model of
-                    Opened ->
-                        0
-
-                    Closed ->
-                        300
-                )
-            ]
-            empty
-            |> screen
+        [ link (Routing.routeToUrl AboutRoute) <|
+            button Link
+                [ onPreventDefaultClick <| NewRoute AboutRoute
+                , vary Selected (model.selected == AboutRoute)
+                ]
+                (text "About")
+        , link (Routing.routeToUrl TopRoute) <|
+            button Link
+                [ onPreventDefaultClick <| NewRoute TopRoute
+                , vary Selected (model.selected == TopRoute)
+                ]
+                (text "Data")
         ]
 
 
@@ -131,10 +98,5 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        SelectMenu ->
-            case model of
-                Opened ->
-                    ( Closed, Cmd.none )
-
-                Closed ->
-                    ( Opened, Cmd.none )
+        NewRoute route ->
+            ( { model | selected = route }, Navigation.newUrl (Routing.routeToUrl route) )
