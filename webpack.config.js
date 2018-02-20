@@ -12,8 +12,8 @@ const dev = 'development';
 
 // determine build env
 const TARGET_ENV = process.env.npm_lifecycle_event === 'build' ? prod : dev;
-const isDev = TARGET_ENV == dev;
-const isProd = TARGET_ENV == prod;
+const isDev = TARGET_ENV === dev;
+const isProd = TARGET_ENV === prod;
 
 // entry and output path/filename variables
 const entryPath = path.join(__dirname, 'src/index.ts');
@@ -60,7 +60,7 @@ var commonConfig = {
 }
 
 // additional webpack settings for local env (when invoked by 'npm start')
-if (isDev === true) {
+if (isDev) {
     module.exports = merge(commonConfig, {
         entry: entryPath,
         devServer: {
@@ -91,7 +91,7 @@ if (isDev === true) {
 }
 
 // additional webpack settings for prod env (when invoked via 'npm run build')
-if (isProd === true) {
+if (isProd) {
     module.exports = merge(commonConfig, {
         entry: entryPath,
         module: {

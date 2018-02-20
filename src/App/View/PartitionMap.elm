@@ -2,7 +2,6 @@ module App.View.PartitionMap exposing (..)
 
 import Element exposing (..)
 import Style exposing (..)
-import Style.Font as Font
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import App.Data exposing (Partition, PartitionNode(Rect, Path), PartitionParams)
@@ -13,14 +12,11 @@ import App.Data exposing (Partition, PartitionNode(Rect, Path), PartitionParams)
 
 type Styles
     = None
-    | Title
 
 
 styles : List (Style Styles variation)
 styles =
     [ Style.style None []
-    , Style.style Title
-        [ Font.size 32 ]
     ]
 
 
